@@ -1,0 +1,142 @@
+Description
+===========
+
+This project contains the means to build the program taut_enum, and
+two helper programs mol\_diff\_viewer and mol\_diff\_viewer2.
+
+Taut_enum uses sets of SMIRKS to standardise input molecules and
+optionally perform tautomer enumeration.  Initially its purpose was to
+prepare structures for virtual screening although like any good tool
+it has been stretched beyond that.  Taut_enum has its origins in a
+program called Leatherface written by Peter Kenny(1). This used SMARTS
+patterns and an associated control language to do molecular editing
+and somewhat pre-dated the SMIRKS language.  SMIRKS(2) is a language for
+describing reactions and is more convenient for standardisation and
+tautomer enumeration, not least because the documentation is already
+written by someone else.
+
+The taut_enum program has 'canned' SMIRKS descriptions for
+standardisation and two levels of tautomer enumeration and a
+prediction of likely protonation states at physiological pH.  It can
+also be used for more general transformations using SMIRKS files
+provided by the user.
+
+For preparing a file for virtual screening, it is best run on 2D
+structures, and the command would be:
+	    ./taut_enum -I chembl\_20\_first\_10000.smi \
+	    -O chembl\_20\_first\_10000\_VS.smi \
+	    --original-enumeration \
+	    --strip-salts \
+	    --enumerate-protonation
+
+The input file, a piece of Chembl version 20, is in the directory
+test_dir.
+
+The original-enumeration mode is intended to be used for exploring
+tautomers likely to be found at physiological pH, so as to make
+structures suitable for virtual screening.  There is another mode,
+extended-enumeration that does a much more extensive set of
+transformations.  This is intended to be used as part of a compound
+equivalence identification, such as you'd use in a compound database.
+Before adding a compound structure to a database, you would probably
+want to check that it isn't already in there.  To make this as
+reliable as possible, it's wise to assume that two chemists might not
+agree on an appropriate tautomer, and explore a wide range of
+possibilities.
+
+Taut_enum also has an option to produce a canonical tautomer.  There's
+nothing magical or chemically sensible about this.  It merely
+enumerates all tautomers according to the standard or extended rules,
+sorts the canonical SMILES strings of the tautomers so produced into
+alphanumerical order, and returns the first in the list.  In principle
+this can produce two molecules with the same functional group in
+different tautomers in the canonical tautomer if the rest of the
+molecule creates different sort orders for the SMILES strings.
+
+Running the program with no command-line arguments or --help will
+produce a full list of options with some associated explanation.
+
+As well as the program taut_enum itself, there are 2 helper programs
+mol\_diff\_viewer and mol\_diff\_viewer2. These were thrown together to
+help with devlopment of taut_enum, and are used to identify
+differences in two SMILES files.  They are included here because
+why not?
+
+Program mol\_diff\_viewer takes 2 input files which are assumed to be 2
+sets of molecules in the same order with the same names.  It scans
+down the two lists and if it finds that the same name is associated
+with different SMILES strings then it shows that pair side by side.
+It's so you can see where two standardisation approaches differ, for
+example.
+
+Try ./mol\_diff\_viewer chembl\_20\_first\_10000.smi \
+ chembl\_20\_first\_10000\_std.smi
+
+Program mol\_diff\_viewer2 is similar, but the 2 input files can have
+different numbers of SMILES strings for each molecule name.  It shows
+side by side those molecules where the SMILES strings are different
+either in structure or number.  It's for examining different tautomer
+programs or rules, for example.  If one tautomer enumerator gives 2
+tautomers and the other 4, the two sets of structures and SMILES
+strings will be shown alongside each other.
+
+Try ./mol\_diff\_viewer2 chembl\_20\_first\_10000.smi \
+chembl\_20\_first\_10000\_orig.smi
+
+Building the programs
+=====================
+
+Requires: a recent version of OEChem, a relatively recent version of
+Boost (1.55 and 1.60 are known to work).  For mol\_diff\_viewer you will
+also need Qt (version >5.2) and Cairo. The qmake from an appropriate
+Qt must be in your path.
+
+To build it, use the CMakeLists.txt file in the src directory. It
+requires the following environment variable to point to a relevant
+place:
+
+OE_DIR - the top level of an OEChem distribution
+
+Then cd to src and do something like:
+mkdir dev-build
+cd dev-build
+cmake -DCMAKE\_BUILD\_TYPE=DEBUG ..
+make
+
+If all goes to plan, this will make a directory src/../exe_DEBUG with the
+executables in it. These will have debugging information in them.
+
+For a release version:
+mkdir prod-build
+cd prod-build
+cmake -DCMAKE\_BUILD\_TYPE=RELEASE ..
+make
+
+and you'll get stuff in src/../exe_RELEASE which should have full
+compiler optimisation applied.
+
+If you're not wanting to use the system-supplied Boost distribution in
+/usr/include then set BOOST_ROOT to point to the location of a recent
+(>1.48) build of the Boost libraries.  On my Centos 6.5 machine, the
+system boost is 1.41 which isn't good enough. You will also probably
+need to use '-DBoost\_NO\_BOOST\_CMAKE=TRUE' when running cmake:
+
+cmake -DCMAKE\_BUILD\_TYPE=RELEASE -DBoost\_NO\_BOOST\_CMAKE=TRUE ..
+
+These instructions have only been tested in Centos 6 and Ubuntu 14.04
+Linux systems.  I have no experience of using them on Windows or OSX,
+and no means of doing so.
+
+References
+==========
+(1) Kenny PW, Sadowski, J (2005). Structure modification in chemical
+databases. Methods and principles in medicinal chemicstry. In: Oprea T
+(ed) Chemoinformatics in drug discovery. 23:271-285.
+(2) SMIRKS Theory Manual:
+http://www.daylight.com/dayhtml/doc/theory/theory.smirks.html.
+
+David Cosgrove
+AstraZeneca
+26th January 2016
+
+davidacosgroveaz@gmail.com
