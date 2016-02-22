@@ -24,11 +24,13 @@ ENDIF (WIN32)
 IF(CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64")
 FIND_FILE(CAIRO_LIBRARY ${LIBCAIRO}
   /usr/local/lib64
-  /usr/lib64)
+  /usr/lib64
+  /usr/lib/x86_64-linux-gnu)
 ELSE()
 FIND_FILE(CAIRO_LIBRARY ${LIBCAIRO}
   /usr/local/lib
-  /usr/lib)
+  /usr/lib
+  /usr/lib/x86_64-linux-gnu)
 ENDIF()
 
 
