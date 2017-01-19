@@ -142,7 +142,7 @@ OEMolBase *canonical_tautomer( OEMolBase &in_mol ) {
 
   // delete the pointer from smiles rather than all_tauts because they are in different
   // orders smiles is the one that counts.
-  for( int i = 1 , is = smiles.size() ; i < is ; ++i ) {
+  for( size_t i = 1 , is = smiles.size() ; i < is ; ++i ) {
     delete smiles[i].second;
   }
 
@@ -167,7 +167,7 @@ vector<string> enumerate_tautomers_smiles( const string &in_smi ) {
 
   vector<OEMolBase *> tauts = enumerate_tautomers( in_mol , string( "" ) ,
 						   string( "" ) );
-  for( int i = 0 , is = tauts.size() ; i < is ; ++i ) {
+  for( size_t i = 0 , is = tauts.size() ; i < is ; ++i ) {
     OECreateSmiString( smi , *tauts[i] , oeflavour );
     if( ret_val.end() == find( ret_val.begin() , ret_val.end() , smi ) ) {
       ret_val.push_back( smi );

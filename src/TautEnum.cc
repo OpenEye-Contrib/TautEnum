@@ -122,12 +122,12 @@ vector<OEMolBase *> TautEnum::enumerate( OEMolBase &in_mol , bool verbose ,
   vector<OEAtomBase *> input_rad_atoms;
   DACLIB::radical_atoms( in_mol , input_rad_atoms );
 
-  unsigned int next_start = 0;
+  size_t next_start = 0;
   while( true ) {
     // only do tautomers added in the last round. There should be no further products
     // possible from the results of rounds previous to that, as they will already be
     // in ret_mols.
-    unsigned int start_size = ret_mols.size();
+    size_t start_size = ret_mols.size();
 #ifdef NOTYET
     cout << "Next start, current set are : " << endl;
     BOOST_FOREACH( string smi , all_can_smis ) {
@@ -135,7 +135,7 @@ vector<OEMolBase *> TautEnum::enumerate( OEMolBase &in_mol , bool verbose ,
     }
 #endif
 
-    for( unsigned int i = next_start , is = ret_mols.size() ; i < is ; ++i ) {
+    for( size_t i = next_start , is = ret_mols.size() ; i < is ; ++i ) {
 
       int smirks_num = 0;
       BOOST_FOREACH( pOELibGen libgen , lib_gens_ ) {
@@ -201,7 +201,7 @@ vector<OEMolBase *> TautEnum::enumerate( OEMolBase &in_mol , bool verbose ,
                 ret_mols.push_back( prod_mol );
                 if( ret_mols.size() > max_out_mols_ ) {
                   // it's going to take too long
-                  for( int j = 0 , js = ret_mols.size() ; j < js ; ++j ) {
+                  for( size_t j = 0 , js = ret_mols.size() ; j < js ; ++j ) {
                     delete ret_mols[j];
                   }
                   ret_mols.clear();
@@ -269,7 +269,7 @@ vector<string> TautEnum::enumerate_smiles( OEMolBase &in_mol , bool verbose ,
              back_inserter( ret_val ) ,
              bind( &pair<string,OEMolBase *>::first , _1 ) );
 
-  for( int i = 1 , is = smiles.size() ; i < is ; ++i ) {
+  for( size_t i = 1 , is = smiles.size() ; i < is ; ++i ) {
     delete smiles[i].second;
   }
 

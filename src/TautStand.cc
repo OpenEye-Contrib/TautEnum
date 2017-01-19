@@ -108,7 +108,7 @@ OEMolBase *TautStand::standardise( OEMolBase &in_mol , bool verbose ,
   all_smis.insert( DACLIB::create_cansmi( in_mol ) );
 
   while( true ) {
-    unsigned int smis_size = all_smis.size();
+    size_t smis_size = all_smis.size();
     int smirks_num = 0;
     BOOST_FOREACH( pOELibGen libgen , lib_gens_ ) {
 #ifdef NOTYET

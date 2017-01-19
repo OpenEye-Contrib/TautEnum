@@ -182,7 +182,7 @@ void expand_vector_bindings( const vector<pair<string,string> > &in_smirks ,
                              vector<string> &exp_smirks ) {
 
   exp_smirks.clear();
-  for( int i = 0 , is = in_smirks.size() ; i < is ; ++i ) {
+  for( size_t i = 0 , is = in_smirks.size() ; i < is ; ++i ) {
     string tmp = in_smirks[i].second;
     if( !vbs.empty() ) {
       OESmartsLexReplace( tmp , vbs );
@@ -214,7 +214,7 @@ void create_libgens( const vector<string> &exp_smirks ,
                      const vector<pair<string,string> > &in_smirks ,
                      vector<pOELibGen> &lib_gens ) {
 
-  for( int i = 0 , is = exp_smirks.size() ; i < is ; ++i ) {
+  for( size_t i = 0 , is = exp_smirks.size() ; i < is ; ++i ) {
     lib_gens.push_back( DACLIB::create_libgen( exp_smirks[i] ) );
     if( !*lib_gens.back() ) {
       cerr << "AWOOGA : error parsing SMIRKS " << exp_smirks[i]

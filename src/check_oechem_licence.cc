@@ -40,7 +40,9 @@ namespace DACLIB {
           if( 0 == expdate[0] ) {
             err_msg = string( "No OEChem Licence found.\nCan\'t continue." );
           } else {
-            boost::gregorian::date d( expdate[2] , expdate[1] , expdate[0] );
+            boost::gregorian::date d( static_cast<short unsigned int>( expdate[2] ) ,
+                                static_cast<short unsigned int>( expdate[1] ) ,
+                                static_cast<short unsigned int>( expdate[0] ) );
             err_msg =
                 string( "Your OEChem Licence expired on " ) +
                 boost::gregorian::to_simple_string( d ) +

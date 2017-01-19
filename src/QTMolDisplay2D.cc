@@ -1,6 +1,6 @@
 //
 // file QTMolDisplay2D.cc
-// David Cosgrove
+// Dave Cosgrove
 // AstraZeneca
 // 1st March 2007
 //
@@ -158,7 +158,7 @@ namespace DACLIB {
     // make sure that all the requested atoms are in the molecule. Mayhem can ensue
     // otherwise.
     atom_colours_.clear();
-    for( int i = 0 , is = atoms.size() ; i < is ; ++i ) {
+    for( size_t i = 0 , is = atoms.size() ; i < is ; ++i ) {
       OEIter<OEAtomBase> ma =
           disp_mol_->GetAtoms( HasAtomIndex( atom_index( *atoms[i] ) ) );
       if( ma ) {
@@ -176,7 +176,7 @@ namespace DACLIB {
                                      const QColor &colour ) {
 
     atom_colours_.clear();
-    for( int i = 0 , is = atom_idxs.size() ; i < is ; ++i ) {
+    for( size_t i = 0 , is = atom_idxs.size() ; i < is ; ++i ) {
       OEIter<OEAtomBase> ats = disp_mol_->GetAtoms( HasAtomIndex( atom_idxs[i] ) );
       if( ats ) {
         atom_colours_.push_back( make_pair( ats , colour ) );
@@ -235,7 +235,7 @@ namespace DACLIB {
 
     atom_tooltips_.clear();
 
-    for( int i = 0 , is = sub_searches.size() ; i < is ; ++i ) {
+    for( size_t i = 0 , is = sub_searches.size() ; i < is ; ++i ) {
       // unique matches only (that's the true bit in Match)
       OEIter<OEMatchBase> match = sub_searches[i].first->Match( *disp_mol_ , true );
       for( ; match ; ++match ) {
@@ -277,7 +277,7 @@ namespace DACLIB {
                                      const QColor &colour ) {
 
     bond_colours_.clear();
-    for( int i = 0 , is = bond_idxs.size() ; i < is ; ++i ) {
+    for( size_t i = 0 , is = bond_idxs.size() ; i < is ; ++i ) {
       OEIter<OEBondBase> bds = disp_mol_->GetBonds( DACLIB::HasBondIndex( bond_idxs[i] ) );
       if( bds ) {
         bond_colours_.push_back( make_pair( bds , colour ) );
@@ -322,7 +322,7 @@ void QTMolDisplay2D::label_atoms_by_number( const std::vector<OEChem::OEAtomBase
 
   atom_labels_.clear();
   atom_tooltips_.clear();
-  for( int i = 0 , is = atoms.size() ; i < is ; ++i ) {
+  for( size_t i = 0 , is = atoms.size() ; i < is ; ++i ) {
     OEIter<OEAtomBase> ma =
       disp_mol_->GetAtoms( DACLIB::HasAtomIndex( DACLIB::atom_index( *atoms[i] ) ) );
     string atnam( "H" );
@@ -377,7 +377,7 @@ void QTMolDisplay2D::label_atoms_by_map_idx( const string &smirks_string ,
 
   // extract the map_idxs from the atom_bits
   vector<unsigned int> map_idxs( atom_bits.size() , 0 );
-  for( int k = 0 , ks = atom_bits.size() ; k < ks ; ++k ) {
+  for( size_t k = 0 , ks = atom_bits.size() ; k < ks ; ++k ) {
     size_t i = atom_bits[k].rfind( ":" );
     if( i == string::npos ) {
       continue; // not index for this atom
@@ -469,7 +469,7 @@ void QTMolDisplay2D::set_line_width( int new_width ) {
   // *******************************************************************************
   void QTMolDisplay2D::render_atom_labels() {
 
-    for( int i = 0 , is = atom_labels_.size() ; i < is ; ++i ) {
+    for( size_t i = 0 , is = atom_labels_.size() ; i < is ; ++i ) {
       OE2DAtomDisplay *adisp = disp_->GetAtomDisplay( atom_labels_[i].first );
       adisp->SetProperty( atom_labels_[i].second );
     }
@@ -488,7 +488,7 @@ void QTMolDisplay2D::set_line_width( int new_width ) {
       rect_size = 5;
     }
 
-    for( int i = 0 , is = sel_atoms_.size() ; i < is ; ++i ) {
+    for( size_t i = 0 , is = sel_atoms_.size() ; i < is ; ++i ) {
       OE2DAtomDisplay *adisp = disp_->GetAtomDisplay( sel_atoms_[i] );
       OE2DPoint cds = adisp->GetCoords();
       qp.setPen( "Orange" );
@@ -530,7 +530,7 @@ void QTMolDisplay2D::set_line_width( int new_width ) {
 
     if( Qt::LeftButton == e->button() ) {
       OEAtomBase *pa = find_nearest_atom( e->x() , e->y() );
-      if( !pa && !Qt::ControlModifier == e->modifiers() ) {
+      if( !pa && Qt::ControlModifier != e->modifiers() ) {
         sel_atoms_.clear();
       }
       if( pa ) {
@@ -616,7 +616,7 @@ void QTMolDisplay2D::set_line_width( int new_width ) {
   void QTMolDisplay2D::append_atom_tooltip( OEAtomBase *atom , const string &label ) {
 
     int i = -1;
-    for( int j = 0 , js = atom_tooltips_.size() ; j < js ; ++j ) {
+    for( int j = 0 , js = static_cast<int>( atom_tooltips_.size() ) ; j < js ; ++j ) {
       if( atom_tooltips_[j].first == atom ) {
         i = j;
         break;
@@ -635,7 +635,7 @@ void QTMolDisplay2D::set_line_width( int new_width ) {
 
     OEAtomBase *atom = find_nearest_atom( e->pos().x() , e->pos().y() );
     if( atom ) {
-      for( int i = 0 , is = atom_tooltips_.size() ; i < is ; ++i ) {
+      for( size_t i = 0 , is = atom_tooltips_.size() ; i < is ; ++i ) {
         if( atom_tooltips_[i].first == atom ) {
           QToolTip::showText( e->globalPos() , atom_tooltips_[i].second );
           break;
