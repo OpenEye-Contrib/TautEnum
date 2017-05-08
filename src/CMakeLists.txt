@@ -16,8 +16,6 @@ endif()
 
 find_package(OEToolkits COMPONENTS oedepict oechem oesystem oeplatform)
 find_package(Boost COMPONENTS program_options regex iostreams filesystem system date_time thread REQUIRED)
-find_package(Qt5 COMPONENTS Core Widgets REQUIRED)
-find_package(Cairo REQUIRED)
 
 # Instruct CMake to run moc automatically when needed.
 set(CMAKE_AUTOMOC ON)
@@ -31,6 +29,8 @@ include_directories( SYSTEM
 
 set(EXECUTABLE_OUTPUT_PATH ${TAUT_ENUM_SOURCE_DIR}/exe_${CMAKE_BUILD_TYPE})
 set(LIBRARY_OUTPUT_PATH ${TAUT_ENUM_SOURCE_DIR}/exe_${CMAKE_BUILD_TYPE})
+
+OPTION(BUILD_GRAPHICS_PROGRAMS "Build the mol_diff_viewer and mol_diff_viewer2 Qt programs" OFF)
 
 # general library functions, that can be built into other programs, python modules etc.
 set(TAUT_ENUM_LIB_SRCS
@@ -79,80 +79,88 @@ add_library(tautenum STATIC ${TAUT_ENUM_LIB_SRCS} ${TAUT_ENUM_DACLIB_SRCS})
 
 set(TAUT_ENUM_LIBS ${LIBS}
   ${OEToolkits_LIBRARIES}
-  ${Boost_LIBRARIES})
+  ${Boost_LIBRARIES} ${SYSLIBS})
 
 add_executable(taut_enum ${TAUT_ENUM_SRCS}
   ${TAUT_ENUM_INCS} ${TAUT_ENUM_DACLIB_SRCS} ${TAUT_ENUM_DACLIB_INCS})
 target_link_libraries(taut_enum z tautenum ${TAUT_ENUM_LIBS} z pthread rt)
 
-# mol_diff_viewer, for comparing files of SMILES string, e.g. from results
-# of different tautomer enumerations
+if(BUILD_GRAPHICS_PROGRAMS)
 
-set(MOL_DIFF_VIEWER_SRCS
-mol_diff_viewer.cc
-MolDiffViewer.cc)
+  find_package(Qt5 COMPONENTS Core Widgets REQUIRED)
+  find_package(Cairo REQUIRED)
+  
+  # mol_diff_viewer, for comparing files of SMILES string, e.g. from results
+  # of different tautomer enumerations
 
-set(MOL_DIFF_VIEWER_INCS MolDiffViewer.H)
+  set(MOL_DIFF_VIEWER_SRCS
+    mol_diff_viewer.cc
+    MolDiffViewer.cc)
 
-set(MOL_DIFF_VIEWER_DACLIB_SRCS
-build_time.cc
-check_oechem_licence.cc
-create_cansmi.cc
-draw_oemol_to_qimage.cc
-split_smiles_into_atom_bits.cc
-QTMolDisplay2D.cc
-create_oesubsearch.cc
-extract_smarts_from_smirks.cc)
+  set(MOL_DIFF_VIEWER_INCS MolDiffViewer.H)
 
-set(MOL_DIFF_VIEWER_DACLIB_INCS
-stddefs.H
-DACOEMolAtomIndex.H
-DACOEMolBondIndex.H
-FileExceptions.H
-QTMolDisplay2D.H
-boost_tuples_and_bind.H)
+  set(MOL_DIFF_VIEWER_DACLIB_SRCS
+    build_time.cc
+    check_oechem_licence.cc
+    create_cansmi.cc
+    draw_oemol_to_qimage.cc
+    split_smiles_into_atom_bits.cc
+    QTMolDisplay2D.cc
+    create_oesubsearch.cc
+    extract_smarts_from_smirks.cc)
 
-set(MOL_DIFF_VIEWER_LIBS ${LIBS}
-  ${Qt5Widgets_LIBRARIES}
-  ${OEToolkits_LIBRARIES}
-  ${Boost_LIBRARIES} ${CAIRO_LIBRARY})
+  set(MOL_DIFF_VIEWER_DACLIB_INCS
+    stddefs.H
+    DACOEMolAtomIndex.H
+    DACOEMolBondIndex.H
+    FileExceptions.H
+    QTMolDisplay2D.H
+    boost_tuples_and_bind.H)
 
-add_executable( mol_diff_viewer ${MOL_DIFF_VIEWER_SRCS} ${MOL_DIFF_VIEWER_DACLIB_SRCS}
-  ${MOL_DIFF_VIEWER_INCS} ${MOL_DIFF_VIEWER_DACLIB_INCS} )
-target_link_libraries(mol_diff_viewer ${MOL_DIFF_VIEWER_LIBS} z pthread rt)
+  set(SYSLIBS z pthread m stdc++)
 
-# mol_diff_viewer2, for comparing files of SMILES string, e.g. from results
-# of different tautomer enumerations. A 2nd version
+  set(MOL_DIFF_VIEWER_LIBS ${LIBS}
+    ${Qt5Widgets_LIBRARIES}
+    ${OEToolkits_LIBRARIES}
+    ${Boost_LIBRARIES} ${CAIRO_LIBRARY} ${SYSLIBS})
 
-set(MOL_DIFF_VIEWER2_SRCS
-mol_diff_viewer2.cc
-MolDiffViewer2.cc)
+  add_executable( mol_diff_viewer ${MOL_DIFF_VIEWER_SRCS} ${MOL_DIFF_VIEWER_DACLIB_SRCS}
+    ${MOL_DIFF_VIEWER_INCS} ${MOL_DIFF_VIEWER_DACLIB_INCS} )
+  target_link_libraries(mol_diff_viewer ${MOL_DIFF_VIEWER_LIBS} z pthread rt)
 
-set(MOL_DIFF_VIEWER2_INCS MolDiffViewer2.H)
+  # mol_diff_viewer2, for comparing files of SMILES string, e.g. from results
+  # of different tautomer enumerations. A 2nd version
 
-set(MOL_DIFF_VIEWER2_DACLIB_SRCS
-build_time.cc
-check_oechem_licence.cc
-create_cansmi.cc
-draw_oemol_to_qimage.cc
-split_smiles_into_atom_bits.cc
-QTMolDisplay2D.cc
-create_oesubsearch.cc
-extract_smarts_from_smirks.cc)
+  set(MOL_DIFF_VIEWER2_SRCS
+    mol_diff_viewer2.cc
+    MolDiffViewer2.cc)
 
-set(MOL_DIFF_VIEWER2_DACLIB_INCS
-stddefs.H
-DACOEMolAtomIndex.H
-DACOEMolBondIndex.H
-FileExceptions.H
-QTMolDisplay2D.H
-boost_tuples_and_bind.H)
+  set(MOL_DIFF_VIEWER2_INCS MolDiffViewer2.H)
 
-set(MOL_DIFF_VIEWER2_LIBS ${LIBS}
-  ${Qt5Widgets_LIBRARIES}
-  ${OEToolkits_LIBRARIES}
-  ${Boost_LIBRARIES} ${CAIRO_LIBRARY})
+  set(MOL_DIFF_VIEWER2_DACLIB_SRCS
+    build_time.cc
+    check_oechem_licence.cc
+    create_cansmi.cc
+    draw_oemol_to_qimage.cc
+    split_smiles_into_atom_bits.cc
+    QTMolDisplay2D.cc
+    create_oesubsearch.cc
+    extract_smarts_from_smirks.cc)
 
-add_executable( mol_diff_viewer2 ${MOL_DIFF_VIEWER2_SRCS} ${MOL_DIFF_VIEWER2_DACLIB_SRCS}
-  ${MOL_DIFF_VIEWER2_INCS} ${MOL_DIFF_VIEWER2_DACLIB_INCS} )
-target_link_libraries(mol_diff_viewer2 ${MOL_DIFF_VIEWER2_LIBS} z pthread rt)
+  set(MOL_DIFF_VIEWER2_DACLIB_INCS
+    stddefs.H
+    DACOEMolAtomIndex.H
+    DACOEMolBondIndex.H
+    FileExceptions.H
+    QTMolDisplay2D.H
+    boost_tuples_and_bind.H)
+
+  set(MOL_DIFF_VIEWER2_LIBS ${LIBS}
+    ${Qt5Widgets_LIBRARIES}
+    ${OEToolkits_LIBRARIES}
+    ${Boost_LIBRARIES} ${CAIRO_LIBRARY} ${SYSLIBS})
+
+  add_executable( mol_diff_viewer2 ${MOL_DIFF_VIEWER2_SRCS} ${MOL_DIFF_VIEWER2_DACLIB_SRCS}
+    ${MOL_DIFF_VIEWER2_INCS} ${MOL_DIFF_VIEWER2_DACLIB_INCS} )
+  target_link_libraries(mol_diff_viewer2 ${MOL_DIFF_VIEWER2_LIBS} z pthread rt)
+endif(BUILD_GRAPHICS_PROGRAMS)

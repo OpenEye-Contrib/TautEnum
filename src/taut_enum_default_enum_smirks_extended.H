@@ -1,5 +1,5 @@
 //
-// file taut_enum_default_enum_smirks_orig.H
+// file taut_enum_default_enum_smirks_extended.H
 // David Cosgrove
 // AstraZeneca
 // 2nd September 2011

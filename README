@@ -53,6 +53,9 @@ this can produce two molecules with the same functional group in
 different tautomers in the canonical tautomer if the rest of the
 molecule creates different sort orders for the SMILES strings.
 
+In the test_dir directory there's a script run_taut_enum.sh which
+shows the different enumeration modes being run on triazoles.smi.
+
 Running the program with no command-line arguments or --help will
 produce a full list of options with some associated explanation.
 
@@ -114,6 +117,13 @@ make
 
 and you'll get stuff in src/../exe_RELEASE which should have full
 compiler optimisation applied.
+
+By default, only taut\_enum is built, so as not to inconvenience
+people who don't have Qt and/or Cairo installed.  In order to build
+mol\_diff\_viewer, do
+
+cmake -DCMAKE\_BUILD\_TYPE=DEBUG -DBUILD\_GRAPHICS\_PROGRAMS=ON ..
+
 
 If you're not wanting to use the system-supplied Boost distribution in
 /usr/include then set BOOST_ROOT to point to the location of a recent
