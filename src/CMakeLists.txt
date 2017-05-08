@@ -4,10 +4,15 @@ project(TAUT_ENUM)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/build_utils/CMakeModules/")
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -m64 -W -Wall -Wconversion -Wno-error=conversion -Wshadow -Wno-error=shadow -D_GLIBCXX_USE_CXX11_ABI=1 -std=c++11 -O3 -ffast-math -fomit-frame-pointer -funroll-loops -fvisibility=hidden -fvisibility-inlines-hidden -fPIC -Werror" )
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -m64 -W -Wall -Wconversion -Wno-error=conversion -Wshadow -Wno-error=shadow -D_GLIBCXX_USE_CXX11_ABI=1 -O3 -ffast-math -fomit-frame-pointer -funroll-loops -fvisibility=hidden -fvisibility-inlines-hidden -fPIC -Werror" )
 
+message("CMAKE_HOST_SYSTEM_VERSION : ${CMAKE_HOST_SYSTEM_VERSION}")
+if( ${CMAKE_HOST_SYSTEM_VERSION} MATCHES "^4." )
+  message( "Hopefully, a Ubuntu 16.04 machine, with a modern compiler." )
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11" )
+endif()
 if( ${CMAKE_HOST_SYSTEM_VERSION} MATCHES "^3.1" )
-  message( "Hopefully, the Ubuntu 14.04 machine, with a modern compiler." )
+  message( "Hopefully, a Ubuntu 14.04 machine, with a modern compiler." )
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11" )
 endif()
 if( ${CMAKE_HOST_SYSTEM_VERSION} MATCHES "^2.6." )
