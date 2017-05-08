@@ -31,7 +31,7 @@ namespace DACLIB {
 void render_atom_labels( OE2DMolDisplay &mol_disp ,
                          const vector<pair<OEAtomBase * , string> > &atom_labels ) {
 
-  for( int i = 0 , is = atom_labels.size() ; i < is ; ++i ) {
+  for( size_t i = 0 , is = atom_labels.size() ; i < is ; ++i ) {
     mol_disp.GetAtomDisplay( atom_labels[i].first )->SetProperty( atom_labels[i].second );
   }
 
@@ -41,7 +41,7 @@ void render_atom_labels( OE2DMolDisplay &mol_disp ,
 void add_atom_colours_to_depiction( OE2DMolDisplay &mol_disp ,
                                     const vector<pair<OEAtomBase * , QColor> > &atom_colours ) {
 
-  for( int i = 0 , is = atom_colours.size() ; i < is ; ++i ) {
+  for( size_t i = 0 , is = atom_colours.size() ; i < is ; ++i ) {
     OE2DAtomDisplay *adisp = mol_disp.GetAtomDisplay( atom_colours[i].first );
     OEFont font = adisp->GetLabelFont();
     font.SetColor( OEColor( atom_colours[i].second.red() ,
@@ -73,7 +73,7 @@ void add_atom_colours_to_depiction( OE2DMolDisplay &mol_disp ,
 void add_bond_colours_to_depiction( OE2DMolDisplay &mol_disp ,
                                     const vector<pair<OEBondBase * , QColor> > &bond_colours ) {
 
-  for( int i = 0 , is = bond_colours.size() ; i < is ; ++i ) {
+  for( size_t i = 0 , is = bond_colours.size() ; i < is ; ++i ) {
     OE2DBondDisplay *bdisp = mol_disp.GetBondDisplay( bond_colours[i].first );
     OEPen pen = bdisp->GetBgnPen();
     pen.SetForeColor( OEColor( bond_colours[i].second.red() ,
@@ -132,7 +132,8 @@ QImage *oe_mol_disp_to_qimage( OE2DMolDisplay &mol_disp ) {
   OERenderMolecule( oes , "PNG" , mol_disp );
 
   QImage *img = new QImage;
-  img->loadFromData( reinterpret_cast<const unsigned char *>( oes.str().c_str() ) , oes.str().length() , "png" );
+  img->loadFromData( reinterpret_cast<const unsigned char *>( oes.str().c_str() ) ,
+		     static_cast<int>(oes.str().length()) , "png" );
 
   return img;
 
