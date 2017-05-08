@@ -137,10 +137,28 @@ These instructions have only been tested in Centos 6 and Ubuntu 14.04
 Linux systems.  I have no experience of using them on Windows or OSX,
 and no means of doing so.
 
+Some notes on the program's output
+==================================
+
+The standardisation routine is not intended to produce a canonical or
+representative tautomer.  It merely puts the input molecules into a
+tautomer that the enumeration routines can deal with. Thus, in the
+triazoles.smi case, the 4-H triazole is converted to 2-H tautomer,
+as is the 1-H.
+
+When enumerating the tautomers, the program can either do the original
+enumeration or the extended, it can't do both at the same time.  If
+you want to do both, you need to run the output of one into the input
+of the other.  This can be done either using an intermediate file, or,
+by taking advantage of the OEChem convention that a filename that is
+just an extension forces reading or writing to stdout/stdin, by piping
+the output of one into the input of the other, as shown in
+run_taut_enum.sh.
+
 References
 ==========
 (1) Kenny PW, Sadowski, J (2005). Structure modification in chemical
-databases. Methods and principles in medicinal chemicstry. In: Oprea T
+databases. Methods and principles in medicinal chemistry. In: Oprea T
 (ed) Chemoinformatics in drug discovery. 23:271-285.
 (2) SMIRKS Theory Manual:
 http://www.daylight.com/dayhtml/doc/theory/theory.smirks.html.
