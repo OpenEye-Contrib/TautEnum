@@ -53,7 +53,7 @@ MolDiffViewer2::MolDiffViewer2( int argc , char **argv ) : QMainWindow() {
 
   find_differences();
   if( !diffs_.empty() ) {
-    mol_slider_->setMaximum( diffs_.size() - 1 );
+    mol_slider_->setMaximum( static_cast<int>(diffs_.size() - 1) );
     mol_slider_->setMinimum( 0 );
     slot_slider_changed();
   } else {
@@ -198,18 +198,18 @@ void MolDiffViewer2::read_smiles_file( const string &filename ,
 // ****************************************************************************
 void MolDiffViewer2::find_differences() {
 
-  for( int i = 0 , is = std::min( file1_mols_.size() , file2_mols_.size() ) ; i < is ; ++i ) {
+  for( size_t i = 0 , is = std::min( file1_mols_.size() , file2_mols_.size() ) ; i < is ; ++i ) {
     if( file1_mols_[i].first != file2_mols_[i].first ) {
       break; // the names need to be in sync
     }
     if( file1_mols_[i].second.size() != file2_mols_[i].second.size() ) {
-      diffs_.push_back( i );
+      diffs_.push_back( static_cast<int>(i) );
     } else {
       // both vectors should be sorted in the same order, so if they're the same
       // they'll have the same elements in the same order
-      for( int j = 0 , js = file1_mols_[i].second.size() ; j < js ; ++j ) {
+      for( size_t j = 0 , js = file1_mols_[i].second.size() ; j < js ; ++j ) {
         if( file1_mols_[i].second[j] != file2_mols_[i].second[j] ) {
-          diffs_.push_back( i );
+          diffs_.push_back( static_cast<int>(i) );
           break;
         }
       }
@@ -226,16 +226,17 @@ void MolDiffViewer2::show_smiles( pair<string, vector<string> > &mols ,
                                   QGridLayout *grid , QTextEdit *smiles ) {
 
   smiles->clear();
-  for( int i = 0 , is = mol_disps.size() ; i < is ; ++i ) {
+  for( size_t i = 0 , is = mol_disps.size() ; i < is ; ++i ) {
     mol_disps[i]->hide();
   }
 
-  for( int i = 0 , is = mols.second.size() ; i < is ; ++i ) {
-    if( i == static_cast<int>( mol_disps.size() ) ) {
-      int r = mol_disps.size() / 2;
-      int c = mol_disps.size() % 2;
+  for( size_t i = 0 , is = mols.second.size() ; i < is ; ++i ) {
+    if( i == mol_disps.size() ) {
+      size_t r = mol_disps.size() / 2;
+      size_t c = mol_disps.size() % 2;
       mol_disps.push_back( new DACLIB::QTMolDisplay2D );
-      grid->addWidget( mol_disps.back() , r , c );
+      grid->addWidget( mol_disps.back() , static_cast<int>(r) ,
+                       static_cast<int>(c) );
       // cout << "New widget " << i << " into row " << r << " column " << c << endl;
     }
     OEMolBase *mol = OENewMolBase( OEMolBaseType::OEDefault );
