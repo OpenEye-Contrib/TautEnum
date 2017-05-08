@@ -120,7 +120,7 @@ void TautEnumCallableBase::operator ()() {
           // in the output, but we do want to pass each tautomer through the protonation
           // enumerator
           vector<OEMolBase *> prot_out_mols;
-          for( int i = 0 , is = out_mols.size() ; i < is ; ++i ) {
+          for( size_t i = 0 , is = out_mols.size() ; i < is ; ++i ) {
             // strip_salts will already have been applied by taut_stand if we wanted to do it,
             // as all input mols are standardised.
             OEMolBase *std_prot_mol = prot_stand->standardise( *out_mols[i] , tes_.verbose() ,
@@ -137,7 +137,7 @@ void TautEnumCallableBase::operator ()() {
             delete std_prot_mol;
           }
           // empty out_mols and replace with prot_out_mols
-          for( int i = 0 , is = out_mols.size() ; i < is ; ++i ) {
+          for( size_t i = 0 , is = out_mols.size() ; i < is ; ++i ) {
             delete out_mols[i];
           }
           out_mols = prot_out_mols;
@@ -242,7 +242,7 @@ void TautEnumCallableBase::create_enumerator_objects( const string &stand_smirks
 // ****************************************************************************
 void TautEnumCallableBase::output_molecules( vector<OEMolBase *> &out_mols ) {
 
-  for( int i = 0 , is = out_mols.size() ; i < is ; ++i ) {
+  for( size_t i = 0 , is = out_mols.size() ; i < is ; ++i ) {
     if( tes_.add_numbers_to_name() ) {
       out_mols[i]->SetTitle( out_mols[i]->GetTitle() + tes_.name_postfix() + boost::lexical_cast<string>( i + 1 ) );
     }
@@ -257,7 +257,7 @@ void sort_and_uniquify_molecules( vector<OEMolBase *> &mols ) {
   vector<pair<string,OEMolBase *> > tmp_mols;
   create_smiles( mols , tmp_mols );
 
-  for( int i = 1 , is = tmp_mols.size() ; i < is ; ++i ) {
+  for( size_t i = 1 , is = tmp_mols.size() ; i < is ; ++i ) {
     if( tmp_mols[i].first == tmp_mols[i-1].first ) {
       delete tmp_mols[i].second;
       tmp_mols[i].second = static_cast<OEMolBase *>( 0 );
