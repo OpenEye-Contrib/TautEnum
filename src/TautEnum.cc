@@ -67,17 +67,17 @@ TautEnum::TautEnum( const string &smirks_file , const string &vb_file ,
                     bool dummy __attribute__((unused)) , unsigned int max_t ) :
   smirks_file_( smirks_file ) , vb_file_( vb_file ) , max_out_mols_( max_t ) {
 
+#ifdef NOTYET
   cout << "loading enumeration smirks from " << smirks_file
        << " with vbs from " << vb_file << endl;
-#ifdef NOTYET
 #endif
 
   DACLIB::read_smirks_from_file( smirks_file_ , smirks_);
   DACLIB::read_vbs_from_file( vb_file , vbs_ );
   DACLIB::expand_vector_bindings( smirks_ , vbs_ , exp_smirks_ );
 
-  cout << "Number of expanded enumeration SMIRKS : " << exp_smirks_.size() << endl;
 #ifdef NOTYET
+  cout << "Number of expanded enumeration SMIRKS : " << exp_smirks_.size() << endl;
 #endif
 
 }
@@ -228,8 +228,7 @@ vector<OEMolBase *> TautEnum::enumerate( OEMolBase &in_mol , bool verbose ,
       }
     }
 #ifdef NOTYET
-    cout << "Number of tautomers currently : " << ret_mols.size() << " max_tauts_ : "
-         << max_tauts_ << endl;
+    cout << "Number of tautomers currently : " << ret_mols.size() << endl;
     BOOST_FOREACH( OEMolBase *rm , ret_mols ) {
       cout << DACLIB::create_cansmi( *rm ) << endl;
     }
